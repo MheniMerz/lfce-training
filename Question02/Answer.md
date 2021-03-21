@@ -15,7 +15,22 @@
 ```
 4. if selinux is enforcing, allow the udp port 9514
 ```
-	sudo semanage -a -t syslogd_port_t -p udp 9514
+	# check what ports are allowed by selinux (usually default ports 514 for syslog)
+	$ sudo semanage port -l | grep syslog
+		syslog_tls_port_t              tcp      6514, 10514
+		syslog_tls_port_t              udp      6514, 10514
+		syslogd_port_t                 tcp      601, 20514
+		syslogd_port_t                 udp      514, 601, 20514
+	
+	# add the new udp port to the list of allowed ports (make sure to match the type from the previous output)
+	$ sudo semanage port --add --type syslogd_port_t --proto udp 9514
+	
+	# check that it has been successfully added
+	$ sudo semanage port -l | grep syslog
+		syslog_tls_port_t              tcp      6514, 10514
+		syslog_tls_port_t              udp      6514, 10514
+		syslogd_port_t                 tcp      601, 20514
+		syslogd_port_t                 udp      9514, 514, 601, 20514
 ```
 5. restart the service
 ```
