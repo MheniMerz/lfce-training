@@ -1,28 +1,21 @@
 
 # Answer
-
-NATするときに必要
-
+1. login to `net-exam-1`
 ```
-sysctl -w net.ipv4.ip_forward=1
+	$ssh user@net-exam-1
 ```
 
-REDIRECT使った版
-
+2. enable ip forwarding
 ```
-iptables -t nat -A PREROUTING -i nat1 -p tcp --dport 443 -j REDIRECT --to-port 22022
-```
-
-DNAT
-
-```
-iptables -t nat -A PREROUTING -i nat1 -p tcp --dport 443 -j DNAT --to-destination 10.0.0.1:22022
+	$sudo sysctl -w net.ipv4.ip_forward=1
 ```
 
-永続化させるなら
-
+3. add iptables rule to redirect traffic to destination port
 ```
-apt install iptables-persistent
-/etc/init.d/netfilter-persistent save
+	$sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 22022
 ```
 
+4. make changes persistant
+```
+	$sudo iptables-save > /etc/sysconfig/iptables
+```
