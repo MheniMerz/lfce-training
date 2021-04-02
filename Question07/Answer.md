@@ -1,20 +1,15 @@
 
 # Answer
 
-`FinanceFE` の確認
-
+1. check if the container `FinanceFE` exists
 ```
-lxc-ls -f
+	lxc-info --name FinanceFE
 ```
-
-コピーする
-
+2. clone to the new container
 ```
-lxc-copy -n FinanceFE -N testly -p /srv/lxc
+	lxc-clone -P /srv/lxc FinanceFE testly
 ```
-
-自動起動については `/var/lib/lxc/${コンテナ名}/config` で以下のパラメータを確認
-
+3. disable start on boot
 ```
-lxc.start.auto = 1
+	echo "lxc.start.auto = 0" >> /srv/lxc/testly/config
 ```
